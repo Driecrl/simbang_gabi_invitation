@@ -1,0 +1,94 @@
+/* ---------- Colors: edit here to re-theme ---------- */
+:root {
+  --green-deep: #0c2a20;
+  --green: #14392c;
+  --cream: #f6efdc;
+  --gold: #e3b448;
+  --gold-soft: #f3d98b;
+  --red: #b3392f;
+  --s: 1; /* YES button growth, set by script.js */
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+
+body {
+  font-family: Georgia, "Palatino Linotype", Palatino, serif;
+  color: var(--cream);
+  line-height: 1.65;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(227,180,72,.18), transparent 55%),
+    linear-gradient(180deg, var(--green-deep), var(--green));
+  background-attachment: fixed;
+  padding: 0 1.25rem 3rem;
+}
+
+/* ---------- Parol ---------- */
+.parol {
+  display: block;
+  width: 110px;
+  margin: 0 auto;
+  transform-origin: 50% 0;
+  animation: sway 6s ease-in-out infinite;
+  filter: drop-shadow(0 0 18px rgba(243,217,139,.65));
+}
+.parol .tail { stroke: var(--red); stroke-width: 3; stroke-linecap: round; }
+@keyframes sway { 0%,100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg); } }
+
+/* ---------- Screens ---------- */
+main { max-width: 34rem; margin: 0 auto; text-align: center; }
+.screen { animation: fade .7s ease both; }
+.screen[hidden] { display: none; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+h1, h2 { font-weight: normal; color: var(--gold-soft); line-height: 1.2; margin: .5rem 0 1rem; }
+h1 { font-size: clamp(2rem, 7vw, 3rem); font-style: italic; }
+h2 { font-size: clamp(1.7rem, 6vw, 2.3rem); font-style: italic; }
+h3 { color: var(--gold); font-weight: normal; font-size: 1.2rem; margin: 1.6rem 0 .5rem; }
+.message { min-height: 3.2em; margin: 0 0 1.5rem; }
+.small { font-size: .95rem; opacity: .85; }
+
+/* ---------- Buttons ---------- */
+.buttons {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  gap: 1rem; min-height: 9rem;
+}
+.btn {
+  font: inherit; cursor: pointer; border-radius: 999px; border: 2px solid var(--gold);
+  padding: .75rem 2rem; transition: transform .2s, opacity .3s, font-size .3s, padding .3s;
+  max-width: 100%;
+}
+.btn:focus-visible, textarea:focus-visible { outline: 3px solid var(--cream); outline-offset: 3px; }
+.btn.yes { background: var(--gold); color: var(--green-deep); font-weight: bold; }
+.btn.yes:hover { transform: translateY(-2px); }
+#btn-yes { font-size: calc(1.1rem * var(--s)); padding: calc(.75rem * var(--s)) calc(2rem * var(--s)); }
+.btn.no { background: transparent; color: var(--cream); border-color: var(--red); font-size: 1.1rem; }
+.btn.no[hidden] { display: none; }
+
+/* ---------- Details ---------- */
+.details { text-align: left; margin: 1.5rem 0; padding: 1.25rem 1.5rem; border: 1px solid var(--gold); border-radius: 14px; background: rgba(246,239,220,.06); }
+.details dt { color: var(--gold); font-size: .9rem; margin-top: .9rem; }
+.details dt:first-child { margin-top: 0; }
+.details dd { margin: 0; font-size: 1.1rem; }
+.reminders { text-align: left; padding-left: 1.2rem; margin: 0 0 2rem; }
+
+/* ---------- Letter ---------- */
+.letter { background: var(--cream); color: #2b2a22; text-align: left; padding: 1.75rem 1.5rem; border-radius: 6px; border-top: 6px solid var(--red); box-shadow: 0 10px 40px rgba(0,0,0,.4); }
+.letter h2 { color: var(--green); text-align: center; }
+.letter h3 { color: var(--red); }
+.letter p { margin: 0 0 1rem; }
+.letter .sign { text-align: right; font-style: italic; }
+.wish { border-top: 1px dashed #b9ad8a; margin-top: 1.5rem; }
+.wish label { display: block; font-weight: bold; margin: 1rem 0 .4rem; }
+textarea { width: 100%; font: inherit; padding: .75rem; border: 2px solid #c9bd96; border-radius: 8px; background: #fffaf0; color: #2b2a22; resize: vertical; }
+.error { color: var(--red); min-height: 1.4em; margin: .3rem 0 .6rem; font-size: .95rem; }
+.wish .btn { display: block; margin: 0 auto; }
+.letter .btn.yes { background: var(--green); color: var(--cream); border-color: var(--green); }
+
+/* ---------- Thanks ---------- */
+blockquote { margin: 1.5rem 0; padding: 1rem 1.25rem; border-left: 4px solid var(--gold); background: rgba(246,239,220,.07); font-style: italic; text-align: left; overflow-wrap: anywhere; }
+
+@media (prefers-reduced-motion: reduce) {
+  .parol, .screen { animation: none; }
+  .btn { transition: none; }
+}

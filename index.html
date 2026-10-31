@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simbang Gabi Invitation</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- The parol (star lantern) is drawn by js/parol.js into this element -->
+  <svg id="parol" class="parol" viewBox="0 0 120 190" aria-hidden="true"></svg>
+
+  <main>
+    <!-- 1. Invitation -->
+    <section id="screen-invite" class="screen active" aria-labelledby="invite-title">
+      <p class="small" id="invite-greeting"></p>
+      <h1 id="invite-title">Will you join me for Simbang Gabi?</h1>
+      <p id="invite-message" class="message" aria-live="polite">Nine mornings of light, and I'd love to share one with you.</p>
+      <div class="buttons">
+        <button id="btn-yes" class="btn yes" type="button" aria-label="Yes, I will join you for Simbang Gabi">Yes</button>
+        <button id="btn-no" class="btn no" type="button" aria-label="No">No</button>
+      </div>
+    </section>
+
+    <!-- 2. Details -->
+    <section id="screen-details" class="screen" aria-labelledby="details-title" hidden>
+      <h2 id="details-title">It's a date!</h2>
+      <p class="message">Here is everything you need to know.</p>
+      <dl class="details" id="details-list"></dl>
+      <h3>Little reminders</h3>
+      <ul class="reminders" id="reminders-list"></ul>
+      <button id="btn-letter" class="btn yes" type="button">Open my letter</button>
+    </section>
+
+    <!-- 3. Letter + wish -->
+    <section id="screen-letter" class="screen" aria-labelledby="letter-title" hidden>
+      <article class="letter">
+        <h2 id="letter-title">A letter for you</h2>
+        <div id="letter-body"></div>
+
+        <form id="wish-form" class="wish" novalidate>
+          <h3>Make a wish</h3>
+          <p class="small">
+            Many Filipinos believe that completing all nine dawn Masses of Simbang Gabi
+            brings a special wish. It is a cherished tradition and a popular belief,
+            not a promise. Whatever happens, the hope behind it is what matters.
+          </p>
+          <label for="wish-input">Write your Christmas wish</label>
+          <textarea id="wish-input" rows="4" maxlength="300" placeholder="This Christmas, I wish for..." aria-describedby="wish-error"></textarea>
+          <p id="wish-error" class="error" role="alert"></p>
+          <button class="btn yes" type="submit">Send my wish</button>
+        </form>
+      </article>
+    </section>
+
+    <!-- 4. Confirmation -->
+    <section id="screen-thanks" class="screen" aria-labelledby="thanks-title" hidden>
+      <h2 id="thanks-title">Your wish is safe with the stars</h2>
+      <blockquote id="wish-echo"></blockquote>
+      <p class="message">May your Christmas be filled with peace, hope, and happiness. Salamat, and Maligayang Pasko.</p>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/parol.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
