@@ -4,29 +4,29 @@
    ========================================================= */
 const CONFIG = {
   guestName: "[Their Name]",      // who you are inviting
-  senderName: "[Your Name]",      // who the letter is from
+  senderName: "Drie",             // who the letter is from
   date: "December 16, 2026 (first of nine Masses)",
   time: "4:30 AM, Misa de Gallo",
   church: "[Name of Church], [City]",
   meetingPoint: "In front of the church gate, 4:00 AM",
   reminders: [
-    "Wear something warm and modest; dawn mornings can be cool.",
-    "Come a little early so we can find seats together.",
-    "Bring a small coin for the offering, and a big appetite for bibingka and puto bumbong after Mass."
+    "Baby di mo na kailangan pumustura ng sobra pero kung gusto mo talaga ikaw bahala, it will be so much special to me presence mo palang sobra-sobra na.",
+    "Agahan natin para makahanap tayo ng magandang puwesto sa loob ng simbahan.",
+    "Ingat ka sa biyahe papunta sa meeting point natin babyyy."
   ]
 };
 
 /* ---------- Playful NO messages (one per click) ---------- */
 const NO_MESSAGES = [
-  "Are you sure? It's only a few mornings...",
-  "Think of the warm bibingka waiting for us.",
-  "The parol is looking at you sadly.",
-  "I'll even save you a seat.",
+  "Sure ka na ba riyan baby ilang gabi lang toh baby pleaseeeeee",
+  "Isipin mo yung bibingka at puto bumbong na naghihintay sa atin pagkatapos ng misa.",
+  "Naiisip ko pa naman na nakikinig tayo sa homily ni father oh.",
+  "Tapos magkahawak tayo ng kamay sa ama namin, di mo ba naisip yun?",
+  "Ayaw mo talga? Malulungkot si Papa Jesus niyan bahala ka",
   "Pretty please? It's Christmas.",
-  "Okay, the NO button is getting shy..."
+  "Sige na baby oh kahit na ilang gabi na oh samahan mo na'ko pleaseeeeee"
 ];
-const FINAL_MESSAGE = "Looks like there's only one answer left. Yes?";
-
+const FINAL_MESSAGE = "Pano yan, isa na lang yung choice, wala ka na magagawa. Click that YES button baby pleaseeeeee";
 
 /* ---------- The letter (one string per paragraph) ---------- */
 const LETTER_PARAGRAPHS = [

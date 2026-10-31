@@ -6,7 +6,7 @@
   --gold: #e3b448;
   --gold-soft: #f3d98b;
   --red: #b3392f;
-  --s: 1; /* YES button growth, set by script.js */
+  --s: 1; /* YES button growth, set by app.js */
 }
 
 * { box-sizing: border-box; }
@@ -63,6 +63,15 @@ h3 { color: var(--gold); font-weight: normal; font-size: 1.2rem; margin: 1.6rem 
 .btn.yes:hover { transform: translateY(-2px); }
 #btn-yes { font-size: calc(1.1rem * var(--s)); padding: calc(.75rem * var(--s)) calc(2rem * var(--s)); }
 .btn.no { background: transparent; color: var(--cream); border-color: var(--red); font-size: 1.1rem; }
+
+/* NO button after it starts running away */
+.btn.no.dodging {
+  position: fixed;
+  z-index: 10;
+  margin: 0;
+  background: var(--green-deep);
+  transition: left .35s ease, top .35s ease, transform .3s, opacity .3s;
+}
 .btn.no[hidden] { display: none; }
 
 /* ---------- Details ---------- */

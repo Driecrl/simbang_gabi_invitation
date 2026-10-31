@@ -46,27 +46,63 @@ sign.textContent = `With all my heart, ${CONFIG.senderName}`;
 $("letter-body").append(sign);
 
 /* ---------- YES / NO interaction ---------- */
-const MAX_NO_CLICKS = 6;
 let noClicks = 0;
+let lastAttempt = 0;
+const MAX_NO_CLICKS = NO_MESSAGES.length + 1; // last attempt hides NO
+const noBtn = $("btn-no");
+const yesBtn = $("btn-yes");
 
-$("btn-no").addEventListener("click", () => {
+// Jump NO to a random spot in the middle area of the screen (never the corners)
+function moveNoButton() {
+  noBtn.classList.add("dodging");
+  const w = noBtn.offsetWidth, h = noBtn.offsetHeight;
+
+  // Allowed area: 15% to 85% across, 20% to 85% down
+  const minX = window.innerWidth * 0.15;
+  const maxX = Math.max(window.innerWidth * 0.85 - w, minX);
+  const minY = window.innerHeight * 0.2;
+  const maxY = Math.max(window.innerHeight * 0.85 - h, minY);
+
+  const yes = yesBtn.getBoundingClientRect();
+  const pad = 80; // extra space because YES keeps growing
+  let x, y;
+  for (let i = 0; i < 20; i++) {
+    x = minX + Math.random() * (maxX - minX);
+    y = minY + Math.random() * (maxY - minY);
+    const overlapsYes = x < yes.right + pad && x + w > yes.left - pad &&
+                        y < yes.bottom + pad && y + h > yes.top - pad;
+    if (!overlapsYes) break;
+  }
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+}
+
+// Runs when NO is hovered (mouse) or tapped/clicked
+function tryNo() {
+  const now = Date.now();
+  if (now - lastAttempt < 400) return; // stops one tap counting twice
+  lastAttempt = now;
   noClicks++;
-  const yes = $("btn-yes"), no = $("btn-no");
+  const progress = noClicks / MAX_NO_CLICKS; // 0 to 1
 
-  // YES grows (capped so it never overflows small screens)
-  document.documentElement.style.setProperty("--s", Math.min(1 + noClicks * 0.22, 2.4));
+  // YES grows
+  document.documentElement.style.setProperty("--s", 1 + 1.4 * progress);
 
   if (noClicks >= MAX_NO_CLICKS) {
-    no.hidden = true;
+    noBtn.hidden = true;
     $("invite-message").textContent = FINAL_MESSAGE;
-    yes.focus();
+    yesBtn.focus();
     return;
   }
-  // NO shrinks and fades
-  no.style.transform = `scale(${1 - noClicks * 0.14})`;
-  no.style.opacity = String(1 - noClicks * 0.17);
+  // NO shrinks, fades and runs away
+  noBtn.style.transform = `scale(${1 - 0.85 * progress})`;
+  noBtn.style.opacity = String(1 - 0.9 * progress);
   $("invite-message").textContent = NO_MESSAGES[noClicks - 1];
-});
+  moveNoButton();
+}
+
+
+noBtn.addEventListener("click", tryNo);
 
 $("btn-yes").addEventListener("click", () => showScreen("screen-details"));
 $("btn-letter").addEventListener("click", () => showScreen("screen-letter"));
