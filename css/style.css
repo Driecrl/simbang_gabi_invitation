@@ -62,14 +62,13 @@ h3 { color: var(--gold); font-weight: normal; font-size: 1.2rem; margin: 1.6rem 
 .btn.yes { background: var(--gold); color: var(--green-deep); font-weight: bold; }
 .btn.yes:hover { transform: translateY(-2px); }
 #btn-yes { font-size: calc(1.1rem * var(--s)); padding: calc(.75rem * var(--s)) calc(2rem * var(--s)); }
-.btn.no { background: transparent; color: var(--cream); border-color: var(--red); font-size: 1.1rem; }
+.btn.no { background: var(--green); color: var(--cream); border-color: var(--red); font-size: 1.1rem; }
 
 /* NO button after it starts running away */
 .btn.no.dodging {
   position: fixed;
   z-index: 10;
   margin: 0;
-  background: var(--green-deep);
   transition: left .35s ease, top .35s ease, transform .3s, opacity .3s;
 }
 .btn.no[hidden] { display: none; }
@@ -101,3 +100,17 @@ blockquote { margin: 1.5rem 0; padding: 1rem 1.25rem; border-left: 4px solid var
   .parol, .screen { animation: none; }
   .btn { transition: none; }
 }
+
+/* ---------- Forms, share screen ---------- */
+.form { display: grid; gap: .9rem; margin-top: 1rem; }
+.form label, .wish label { display: block; font-size: .95rem; font-weight: bold; margin-bottom: .25rem; color: var(--green); }
+.form input, .linkrow input {
+  width: 100%; font: inherit; padding: .7rem .8rem; border: 2px solid #c9bd96;
+  border-radius: 8px; background: #fffaf0; color: #2b2a22;
+}
+.form .row { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+@media (max-width: 520px) { .form .row { grid-template-columns: 1fr; } }
+.linkrow { display: flex; gap: .5rem; align-items: center; }
+.linkrow input { flex: 1; min-width: 0; }
+#qr { display: inline-block; background: #fff; padding: 12px; border-radius: 10px; margin: 1rem 0; }
+.notice { border: 1px dashed #b9ad8a; border-radius: 10px; padding: .8rem 1rem; font-size: .95rem; }

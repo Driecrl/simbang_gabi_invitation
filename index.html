@@ -7,12 +7,67 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- The parol (star lantern) is drawn by js/parol.js into this element -->
   <svg id="parol" class="parol" viewBox="0 0 120 190" aria-hidden="true"></svg>
 
   <main>
-    <!-- 1. Invitation -->
-    <section id="screen-invite" class="screen active" aria-labelledby="invite-title">
+    <!-- Loading -->
+    <section id="screen-loading" class="screen active"><p class="message">Lighting the parol...</p></section>
+
+    <!-- Error -->
+    <section id="screen-error" class="screen" hidden>
+      <h2>Oops</h2>
+      <p id="error-text" class="message"></p>
+    </section>
+
+    <!-- SENDER: create the invitation -->
+    <section id="screen-create" class="screen" hidden>
+      <article class="letter">
+        <h2>Invite someone to Simbang Gabi</h2>
+        <form id="create-form" class="form" novalidate>
+          <div class="row">
+            <div><label for="f-sender">Your name</label><input id="f-sender" maxlength="60" autocomplete="off"></div>
+            <div><label for="f-receiver">Their name</label><input id="f-receiver" maxlength="60" autocomplete="off"></div>
+          </div>
+          <div class="row">
+            <div><label for="f-date">Date</label><input id="f-date" maxlength="120"></div>
+            <div><label for="f-time">Time</label><input id="f-time" maxlength="120"></div>
+          </div>
+          <div><label for="f-church">Church</label><input id="f-church" maxlength="160" placeholder="Name of church, city"></div>
+          <div><label for="f-meeting">Meeting point</label><input id="f-meeting" maxlength="160" placeholder="Where will you meet?"></div>
+          <div>
+            <label for="f-message">Your letter to them</label>
+            <textarea id="f-message" rows="9" maxlength="3000"></textarea>
+          </div>
+          <p id="create-error" class="error" role="alert"></p>
+          <button id="btn-create" class="btn yes" type="submit">Create my invitation</button>
+        </form>
+      </article>
+    </section>
+
+    <!-- SENDER: share link, QR, email -->
+    <section id="screen-share" class="screen" hidden>
+      <article class="letter">
+        <h2>Your invitation is ready</h2>
+        <p>Send this link to them, or let them scan the QR code.</p>
+        <div class="linkrow">
+          <input id="share-link" readonly aria-label="Invitation link for the receiver">
+          <button class="btn yes" type="button" data-copy="share-link">Copy</button>
+        </div>
+        <div style="text-align:center"><div id="qr"></div></div>
+        <p style="text-align:center"><a id="share-email" class="btn yes" style="text-decoration:none;display:inline-block">Send by email</a></p>
+        <div class="notice">
+          <strong>Save your own link too.</strong> It is the only way for you to write your wish and read theirs after the reveal.
+          <div class="linkrow" style="margin-top:.6rem">
+            <input id="my-link" readonly aria-label="Your private link">
+            <button class="btn yes" type="button" data-copy="my-link">Copy</button>
+          </div>
+        </div>
+        <p style="text-align:center;margin-top:1.2rem"><button id="btn-share-next" class="btn yes" type="button">Write my wish</button></p>
+      </article>
+    </section>
+
+    <!-- RECEIVER: invitation -->
+    <section id="screen-invite" class="screen" hidden aria-labelledby="invite-title">
       <p class="small" id="invite-greeting"></p>
       <h1 id="invite-title">Will you join me for Simbang Gabi?</h1>
       <p id="invite-message" class="message" aria-live="polite">Nine mornings of light, and I'd love to share one with you.</p>
@@ -22,8 +77,7 @@
       </div>
     </section>
 
-    <!-- 2. Details -->
-    <section id="screen-details" class="screen" aria-labelledby="details-title" hidden>
+    <section id="screen-details" class="screen" hidden aria-labelledby="details-title">
       <h2 id="details-title">It's a date!</h2>
       <p class="message">Here is everything you need to know.</p>
       <dl class="details" id="details-list"></dl>
@@ -32,37 +86,58 @@
       <button id="btn-letter" class="btn yes" type="button">Open my letter</button>
     </section>
 
-    <!-- 3. Letter + wish -->
-    <section id="screen-letter" class="screen" aria-labelledby="letter-title" hidden>
+    <section id="screen-letter" class="screen" hidden aria-labelledby="letter-title">
       <article class="letter">
         <h2 id="letter-title">A letter for you</h2>
         <div id="letter-body"></div>
+        <p style="text-align:center"><button id="btn-to-wish" class="btn yes" type="button">Make my wish</button></p>
+      </article>
+    </section>
 
-        <form id="wish-form" class="wish" novalidate>
-          <h3>Make a wish</h3>
+    <!-- BOTH: wish -->
+    <section id="screen-wish" class="screen" hidden aria-labelledby="wish-title">
+      <article class="letter">
+        <form id="wish-form" class="wish" novalidate style="border-top:0;margin-top:0">
+          <h2 id="wish-title">Make a wish</h2>
           <p class="small">
             Many Filipinos believe that completing all nine dawn Masses of Simbang Gabi
             brings a special wish. It is a cherished tradition and a popular belief,
             not a promise. Whatever happens, the hope behind it is what matters.
           </p>
+          <p class="small" id="wish-for"></p>
           <label for="wish-input">Write your Christmas wish</label>
           <textarea id="wish-input" rows="4" maxlength="300" placeholder="This Christmas, I wish for..." aria-describedby="wish-error"></textarea>
           <p id="wish-error" class="error" role="alert"></p>
-          <button class="btn yes" type="submit">Send my wish</button>
+          <button id="btn-wish" class="btn yes" type="submit">Seal my wish</button>
         </form>
       </article>
     </section>
 
-    <!-- 4. Confirmation -->
-    <section id="screen-thanks" class="screen" aria-labelledby="thanks-title" hidden>
-      <h2 id="thanks-title">Your wish is safe with the stars</h2>
-      <blockquote id="wish-echo"></blockquote>
-      <p class="message">May your Christmas be filled with peace, hope, and happiness. Salamat, and Maligayang Pasko.</p>
+    <!-- BOTH: sealed -->
+    <section id="screen-sealed" class="screen" hidden aria-labelledby="sealed-title">
+      <h2 id="sealed-title">Your wish is sealed</h2>
+      <p class="message">May your Christmas be filled with peace, hope, and happiness.</p>
+      <p id="sealed-status" class="message"></p>
+      <p id="sealed-date" class="message"></p>
+      <button id="btn-show-link" class="btn yes" type="button" hidden>Show the invitation link again</button>
+    </section>
+
+    <!-- BOTH: reveal -->
+    <section id="screen-reveal" class="screen" hidden aria-labelledby="reveal-title">
+      <h2 id="reveal-title">Happy New Year! Your wishes are open</h2>
+      <h3>Your wish</h3>
+      <blockquote id="reveal-mine"></blockquote>
+      <h3 id="reveal-other-title"></h3>
+      <blockquote id="reveal-other"></blockquote>
+      <p class="message">Complete or not, every wish carries the love behind it. Maligayang Bagong Taon!</p>
     </section>
   </main>
 
   <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/crypto.js"></script>
   <script src="js/parol.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
