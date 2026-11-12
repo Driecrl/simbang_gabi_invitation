@@ -14,6 +14,9 @@ create table invitations (
   church text not null check (char_length(church) <= 160),
   meeting_point text not null check (char_length(meeting_point) <= 160),
   message text not null check (char_length(message) <= 3000),
+  no_messages text check (char_length(no_messages) <= 1500),
+  reminders text check (char_length(reminders) <= 1100),
+  final_message text check (char_length(final_message) <= 200),
   reveal_at timestamptz not null default '2027-01-01 00:00:00+08',
   created_at timestamptz not null default now()
 );
@@ -31,12 +34,15 @@ alter table wishes enable row level security;
 
 create or replace function create_invitation(
   p_sender text, p_receiver text, p_date text, p_time text,
-  p_church text, p_meeting text, p_message text
+  p_church text, p_meeting text, p_message text,
+  p_no_messages text, p_reminders text, p_final text
 ) returns json language plpgsql security definer set search_path = public as $$
 declare inv invitations;
 begin
-  insert into invitations (sender_name, receiver_name, event_date, event_time, church, meeting_point, message)
-  values (trim(p_sender), trim(p_receiver), trim(p_date), trim(p_time), trim(p_church), trim(p_meeting), trim(p_message))
+  insert into invitations (sender_name, receiver_name, event_date, event_time, church, meeting_point, message,
+                           no_messages, reminders, final_message)
+  values (trim(p_sender), trim(p_receiver), trim(p_date), trim(p_time), trim(p_church), trim(p_meeting), trim(p_message),
+          trim(p_no_messages), trim(p_reminders), trim(p_final))
   returning * into inv;
   return json_build_object('sender_token', inv.sender_token, 'receiver_token', inv.receiver_token);
 end $$;
@@ -59,6 +65,9 @@ begin
     'church', inv.church,
     'meeting_point', inv.meeting_point,
     'message', inv.message,
+    'no_messages', inv.no_messages,
+    'reminders', inv.reminders,
+    'final_message', inv.final_message,
     'reveal_at', inv.reveal_at,
     'revealed', revealed,
     'receiver_token', case when r = 'sender' then inv.receiver_token end,
@@ -68,6 +77,7 @@ begin
     'other_wish', case when revealed then (select w.wish from wishes w where w.invitation_id = inv.id and w.author <> r) end
   );
 end $$;
+
 
 create or replace function submit_wish(p_token uuid, p_wish text)
 returns void language plpgsql security definer set search_path = public as $$
@@ -83,6 +93,6 @@ begin
   on conflict (invitation_id, author) do update set wish = excluded.wish;
 end $$;
 
-grant execute on function create_invitation(text, text, text, text, text, text, text) to anon;
+grant execute on function create_invitation(text, text, text, text, text, text, text, text, text, text) to anon;
 grant execute on function get_invitation(uuid) to anon;
 grant execute on function submit_wish(uuid, text) to anon;

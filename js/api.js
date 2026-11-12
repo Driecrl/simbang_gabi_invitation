@@ -16,7 +16,8 @@ async function rpc(name, args) {
 
 const createInvitation = (f) => rpc("create_invitation", {
   p_sender: f.sender, p_receiver: f.receiver, p_date: f.date, p_time: f.time,
-  p_church: f.church, p_meeting: f.meeting, p_message: f.message
+  p_church: f.church, p_meeting: f.meeting, p_message: f.message,
+  p_no_messages: f.nomsgs, p_reminders: f.reminders, p_final: f.final
 });
 const getInvitation = (token) => rpc("get_invitation", { p_token: token });
 const submitWish = (token, wish) => rpc("submit_wish", { p_token: token, p_wish: wish });

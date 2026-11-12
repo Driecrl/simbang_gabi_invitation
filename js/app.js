@@ -20,6 +20,11 @@ function fail(msg) {
   $("error-text").textContent = msg || "Something went wrong. Please try again.";
   showScreen("screen-error");
 }
+// Split text into trimmed non-empty lines; use the fallback if there are none
+const linesOr = (text, fallback) => {
+  const l = (text || "").split(/\n+/).map((x) => x.trim()).filter(Boolean);
+  return l.length ? l : fallback;
+};
 function addPara(box, text, cls) {
   const p = document.createElement("p");
   if (cls) p.className = cls;
@@ -57,16 +62,28 @@ function prefillCreateForm() {
   $("f-date").value = CONFIG.defaults.date;
   $("f-time").value = CONFIG.defaults.time;
   $("f-message").value = LETTER_TEMPLATE.join("\n\n");
+  $("f-nomsgs").value = DEFAULT_NO_MESSAGES.join("\n");
+  $("f-final").value = DEFAULT_FINAL_MESSAGE;
+  $("f-reminders").value = DEFAULT_REMINDERS.join("\n");
 }
 
 $("create-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const v = (id) => $(id).value.trim();
   const f = { sender: v("f-sender"), receiver: v("f-receiver"), date: v("f-date"), time: v("f-time"),
-              church: v("f-church"), meeting: v("f-meeting"), message: v("f-message") };
+              church: v("f-church"), meeting: v("f-meeting"), message: v("f-message"),
+              nomsgs: v("f-nomsgs"), final: v("f-final"), reminders: v("f-reminders") };
   const err = $("create-error"), btn = $("btn-create");
   if (Object.values(f).some((x) => !x)) { err.textContent = "Please fill in every field."; return; }
   if (f.message.length < 20) { err.textContent = "Your letter is a little short. Add a few more words."; return; }
+  const nl = linesOr(f.nomsgs, []), rl = linesOr(f.reminders, []);
+  if (nl.length > 8 || nl.some((x) => x.length > 150)) {
+    err.textContent = "Use at most 8 NO messages, each under 150 characters."; return;
+  }
+  if (rl.length > 5 || rl.some((x) => x.length > 200)) {
+    err.textContent = "Use at most 5 reminders, each under 200 characters."; return;
+  }
+  f.nomsgs = nl.join("\n"); f.reminders = rl.join("\n");
   err.textContent = ""; btn.disabled = true; btn.textContent = "Creating...";
   try {
     const key = newKey();
@@ -122,7 +139,9 @@ function fillInvitation() {
 
   const rem = $("reminders-list");
   rem.replaceChildren();
-  CONFIG.reminders.forEach((text) => {
+  noMessages = linesOr(inv.no_messages, DEFAULT_NO_MESSAGES);
+  finalMessage = (inv.final_message || "").trim() || DEFAULT_FINAL_MESSAGE;
+  linesOr(inv.reminders, DEFAULT_REMINDERS).forEach((text) => {
     const li = document.createElement("li");
     li.textContent = text;
     rem.append(li);
@@ -141,7 +160,8 @@ function fillInvitation() {
 /* ---------- YES / NO interaction ---------- */
 let noClicks = 0;
 let lastAttempt = 0;
-const MAX_NO_CLICKS = NO_MESSAGES.length + 1; // last press hides NO
+let noMessages = DEFAULT_NO_MESSAGES;   // replaced by the sender's own lines
+let finalMessage = DEFAULT_FINAL_MESSAGE;
 const noBtn = $("btn-no");
 const yesBtn = $("btn-yes");
 
@@ -173,17 +193,18 @@ function tryNo() {
   if (now - lastAttempt < 400) return;
   lastAttempt = now;
   noClicks++;
-  const progress = noClicks / MAX_NO_CLICKS;
+  const maxClicks = noMessages.length + 1; // the last press hides NO
+  const progress = noClicks / maxClicks;
   document.documentElement.style.setProperty("--s", 1 + 1.4 * progress);
-  if (noClicks >= MAX_NO_CLICKS) {
+  if (noClicks >= maxClicks) {
     noBtn.hidden = true;
-    $("invite-message").textContent = FINAL_MESSAGE;
+    $("invite-message").textContent = finalMessage;
     yesBtn.focus();
     return;
   }
   noBtn.style.transform = `scale(${1 - 0.85 * progress})`;
   noBtn.style.opacity = String(1 - 0.9 * progress);
-  $("invite-message").textContent = NO_MESSAGES[noClicks - 1];
+  $("invite-message").textContent = noMessages[noClicks - 1];
   moveNoButton();
 }
 noBtn.addEventListener("click", tryNo);
