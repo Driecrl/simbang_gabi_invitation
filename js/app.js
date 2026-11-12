@@ -89,9 +89,6 @@ function openShare(receiverToken, senderToken, receiverName, senderName, key) {
   const qr = $("qr");
   qr.replaceChildren();
   if (window.QRCode) new QRCode(qr, { text: link, width: 180, height: 180 });
-  const body = `Hi ${receiverName},\n\n${senderName} has an invitation for you. Open it here:\n${link}`;
-  $("share-email").href = "mailto:?subject=" + encodeURIComponent("You're invited to Simbang Gabi") +
-                          "&body=" + encodeURIComponent(body);
   try { localStorage.setItem("sg_my_link", mine); } catch (e) {}
   showScreen("screen-share");
 }
