@@ -13,6 +13,7 @@ js/api.js               talks to Supabase
 js/crypto.js            locks and unlocks wishes (key stays in the link after the #)
 js/parol.js             draws the lantern
 js/app.js               screens and logic
+js/music.js             floating Bibingka player (official YouTube upload, loads on tap)
 database/supabase-setup.sql   run once in the Supabase SQL Editor
 ```
 
