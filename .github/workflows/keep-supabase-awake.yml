@@ -1,0 +1,23 @@
+# Keeps the free Supabase project from pausing (it pauses after about a week without activity).
+# Every 2 days it asks the database a harmless question. The URL and key below are the same
+# public ones already used by the website, so no secrets are needed here.
+name: Keep Supabase awake
+
+on:
+  schedule:
+    - cron: "0 3 */2 * *"   # 3:00 AM UTC (11:00 AM Philippine time), every 2 days
+  workflow_dispatch:         # lets you run it by hand from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping the database
+        run: |
+          curl --fail --silent --show-error --retry 3 --retry-delay 10 \
+            -X POST "https://huahzsejfnlgiemcvsoz.supabase.co/rest/v1/rpc/get_invitation" \
+            -H "apikey: sb_publishable_DBioNUeCgDqnFBnFBb9NpQ_rye5eF7F" \
+            -H "Content-Type: application/json" \
+            -d '{"p_token":"00000000-0000-0000-0000-000000000000"}'
+          echo
+          echo "Supabase answered. It stays awake."

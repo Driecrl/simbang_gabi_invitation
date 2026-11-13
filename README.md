@@ -31,3 +31,7 @@ Create invitations from the live github.io address so the links work for everyon
 ## Important
 - Links contain a secret key after the # sign. Always share the whole link.
 - Do not commit any .env file. The .gitignore already ignores it.
+
+## Keeping Supabase awake
+.github/workflows/keep-supabase-awake.yml pings the database every 2 days so the free project does not pause.
+Check the Actions tab now and then: a red X means the project is paused. Restore it in the Supabase dashboard.
