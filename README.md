@@ -35,3 +35,13 @@ Create invitations from the live github.io address so the links work for everyon
 ## Keeping Supabase awake
 .github/workflows/keep-supabase-awake.yml pings the database every 2 days so the free project does not pause.
 Check the Actions tab now and then: a red X means the project is paused. Restore it in the Supabase dashboard.
+
+## New Year wish emails (optional)
+People can type their email on the wish screen. On January 1 (12:00 AM Philippine time) a GitHub job emails each of them the wishes.
+Files: scripts/send-new-year-emails.js, .github/workflows/new-year-emails.yml, tools/make-keys.html, database/migration-new-year-emails.sql
+One-time setup:
+1. Run database/migration-new-year-emails.sql in the Supabase SQL Editor.
+2. Open tools/make-keys.html (through Live Server). Put the public key in js/config.js (EMAIL_PUBLIC_KEY).
+3. GitHub secrets (Settings > Secrets and variables > Actions): EMAIL_PRIVATE_KEY, SUPABASE_SERVICE_KEY, GMAIL_USER, GMAIL_APP_PASSWORD.
+4. Actions > New Year wish emails > Run workflow: first mode "test", then "dry".
+The private key and the service key never go in the website or in git. The job logs only counts.

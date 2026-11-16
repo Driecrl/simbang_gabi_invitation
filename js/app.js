@@ -4,6 +4,8 @@ const $ = (id) => document.getElementById(id);
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 let inv = null;    // the invitation loaded from the database
 let token = null;  // the private token from the link
+const EMAIL_ENABLED = typeof EMAIL_PUBLIC_KEY === "object" && EMAIL_PUBLIC_KEY !== null;
+let emailQueued = false;
 const KEY = new URLSearchParams(location.hash.slice(1)).get("k"); // secret key from the link (never sent to the server)
 
 /* ---------- Helpers ---------- */
@@ -153,6 +155,7 @@ function fillInvitation() {
   inv.message.split(/\n+/).map((s) => s.trim()).filter(Boolean).forEach((t) => addPara(body, t));
   addPara(body, `With all my heart, ${inv.sender_name}`, "sign");
 
+  $("wish-email-box").hidden = !EMAIL_ENABLED;
   $("wish-for").textContent =
     `Your wish is locked with a key that exists only in your link, so not even the site's creator can read it. It opens on ${revealDateText()}, when ${otherName()} will see it and you will see theirs.`;
 }
@@ -223,9 +226,17 @@ $("wish-form").addEventListener("submit", async (e) => {
     $("wish-input").focus();
     return;
   }
+  const email = EMAIL_ENABLED ? $("wish-email").value.trim() : "";
+  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    error.textContent = "Please enter a valid email address, or leave it empty.";
+    $("wish-email").focus();
+    return;
+  }
   error.textContent = ""; btn.disabled = true; btn.textContent = "Sealing...";
   try {
-    await submitWish(token, await encryptWish(wish, KEY));
+    const sealed = email ? await sealForEmail(wish, EMAIL_PUBLIC_KEY) : null;
+    await submitWish(token, await encryptWish(wish, KEY), email, sealed);
+    emailQueued = !!email;
     inv.my_wish_sent = true;
     showSealed();
   } catch (ex) {
@@ -242,7 +253,8 @@ function showSealed() {
     : `${other} hasn't written their wish yet.`;
   const days = Math.max(1, Math.ceil((new Date(inv.reveal_at) - Date.now()) / 86400000));
   $("sealed-date").textContent =
-    `Both wishes open on ${revealDateText()}, in ${days} day${days > 1 ? "s" : ""}. Open this same link again then.`;
+    `Both wishes open on ${revealDateText()}, in ${days} day${days > 1 ? "s" : ""}. Open this same link again then.` +
+    (emailQueued ? " We will also email you your wishes on that day." : "");
   $("btn-show-link").hidden = inv.role !== "sender";
   showScreen("screen-sealed");
 }

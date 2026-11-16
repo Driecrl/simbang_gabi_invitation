@@ -20,4 +20,6 @@ const createInvitation = (f) => rpc("create_invitation", {
   p_no_messages: f.nomsgs, p_reminders: f.reminders, p_final: f.final
 });
 const getInvitation = (token) => rpc("get_invitation", { p_token: token });
-const submitWish = (token, wish) => rpc("submit_wish", { p_token: token, p_wish: wish });
+const submitWish = (token, wish, email, sealed) => rpc("submit_wish", {
+  p_token: token, p_wish: wish, p_email: email || null, p_sealed: sealed || null
+});

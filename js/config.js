@@ -7,6 +7,10 @@
 const SUPABASE_URL = "https://huahzsejfnlgiemcvsoz.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_DBioNUeCgDqnFBnFBb9NpQ_rye5eF7F";
 
+/* Public key for the optional New Year email. Paste the public key made by tools/make-keys.html here.
+   While it is null, the email box on the wish screen stays hidden. */
+const EMAIL_PUBLIC_KEY = null;
+
 /* Pre-filled values in the sender form (the sender can change all of them) */
 const CONFIG = {
   defaults: {

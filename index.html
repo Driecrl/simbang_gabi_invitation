@@ -126,6 +126,15 @@
           <label for="wish-input">Write your Christmas wish</label>
           <textarea id="wish-input" rows="4" maxlength="300" placeholder="This Christmas, I wish for..." aria-describedby="wish-error"></textarea>
           <p id="wish-error" class="error" role="alert"></p>
+          <div id="wish-email-box" hidden>
+            <label for="wish-email">Your email (optional)</label>
+            <input id="wish-email" type="email" maxlength="254" autocomplete="email" placeholder="you@example.com">
+            <p class="small">
+              On January 1 we will email you both wishes. To do that, a second sealed copy of your wish is made
+              that only the New Year email job can open, and the site owner has promised never to read wishes.
+              Your address is used only for this one email and is deleted after it is sent. Leave it empty to skip.
+            </p>
+          </div>
           <button id="btn-wish" class="btn yes" type="submit">Seal my wish</button>
         </form>
       </article>

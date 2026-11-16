@@ -167,3 +167,7 @@ blockquote { --edge: var(--gold); margin: 1.2rem 4px; padding: 1rem 1.2rem; back
 .music-links { display: flex; gap: 16px; margin: 10px 0 4px; font-size: .95rem; }
 .music-links a { color: var(--gold); }
 .music-credit { margin: 0; font-size: .8rem; opacity: .8; }
+
+/* ---------- Optional email on the wish screen ---------- */
+.wish input { width: 100%; font: inherit; font-size: 1rem; padding: .7rem .8rem; border: 3px solid #3b3a2a; border-radius: 0; background: #fffdf2; color: #2a2a22; }
+#wish-email-box { margin-bottom: 1rem; }

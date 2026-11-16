@@ -28,3 +28,14 @@ async function decryptWish(data, k) {
   const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: all.slice(0, 12) }, key, all.slice(12));
   return _dec.decode(pt);
 }
+
+/* A second sealed copy of a wish, made only when someone asks for the New Year email.
+   It is locked with the site's public key; only the private key held by the New Year job can open it. */
+async function sealForEmail(text, publicJwk) {
+  const rsa = await crypto.subtle.importKey("jwk", publicJwk, { name: "RSA-OAEP", hash: "SHA-256" }, false, ["encrypt"]);
+  const aes = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt"]);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, aes, _enc.encode(text)));
+  const wrapped = new Uint8Array(await crypto.subtle.encrypt({ name: "RSA-OAEP" }, rsa, await crypto.subtle.exportKey("raw", aes)));
+  return JSON.stringify({ k: _b64(wrapped), iv: _b64(iv), c: _b64(ct) });
+}

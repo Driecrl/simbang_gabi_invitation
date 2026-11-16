@@ -1,0 +1,36 @@
+# Sends each person their wishes by email once the reveal time has passed (January 1, 12:00 AM Philippine time).
+# Scheduled runs repeat for several hours as a backup; each run only sends what has not been sent yet.
+# Secrets needed (repo Settings > Secrets and variables > Actions):
+#   SUPABASE_SERVICE_KEY, EMAIL_PRIVATE_KEY, GMAIL_USER, GMAIL_APP_PASSWORD
+name: New Year wish emails
+
+on:
+  schedule:
+    - cron: "0 16-23 31 12 *"   # Dec 31, 16:00-23:00 UTC = Jan 1, 12:00 AM-7:00 AM Philippine time
+    - cron: "0 0-6 1 1 *"       # Jan 1, 00:00-06:00 UTC = 8:00 AM-2:00 PM Philippine time
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "test = sample email to yourself, dry = check keys only, send = real (only sends once the reveal time has passed)"
+        type: choice
+        default: test
+        options: [test, dry, send]
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-save nodemailer@6
+      - name: Send the emails
+        run: node scripts/send-new-year-emails.js
+        env:
+          MODE: ${{ github.event.inputs.mode || 'send' }}
+          SUPABASE_URL: https://huahzsejfnlgiemcvsoz.supabase.co
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          EMAIL_PRIVATE_KEY: ${{ secrets.EMAIL_PRIVATE_KEY }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
